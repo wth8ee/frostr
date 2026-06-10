@@ -15,6 +15,8 @@ export const auth = betterAuth({
 
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production",
+    crossOrigin: true,
+    disableCSRFCheck: true,
   },
   trustedOrigins: ["https://vercel.app", `https://${process.env.VERCEL_URL}`],
   emailAndPassword: {
