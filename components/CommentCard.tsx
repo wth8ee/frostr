@@ -20,13 +20,13 @@ export function CommentCard({ comment }: { comment: PostComment }) {
     if (isPending) return;
 
     setIsPending(true);
-    setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    setIsLiked((prev) => !prev);
+    setLikesCount((prev: number) => (isLiked ? prev - 1 : prev + 1));
+    setIsLiked((prev: boolean) => !prev);
     try {
       await toggleCommentLike(comment.id);
     } catch (err) {
-      setLikesCount((prev) => (isLiked ? prev + 1 : prev - 1));
-      setIsLiked((prev) => !prev);
+      setLikesCount((prev: number) => (isLiked ? prev + 1 : prev - 1));
+      setIsLiked((prev: boolean) => !prev);
       console.log(err);
     } finally {
       setIsPending(false);

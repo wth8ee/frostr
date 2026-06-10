@@ -12,14 +12,13 @@ import { CreateCommentForm } from "./CreateCommentForm";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getComments } from "@/lib/actions";
-import { Comment, Prisma } from "@/generated/prisma/client";
 import { Skeleton } from "./ui/skeleton";
+import { Prisma, Comment } from "@prisma/client";
 
 interface CommentsSidebarProps {
   post: PostWithAuthor | null;
   onClose: () => void;
 }
-
 export type PostComment = Prisma.CommentGetPayload<{
   include: {
     user: { select: { username: true } };
