@@ -6,9 +6,8 @@ import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { PostComment } from "./CommentsSidebar";
-import { Comment } from "@/generated/prisma/client";
 import { authClient } from "@/lib/auth-client";
-
+import { Comment } from "@prisma/client";
 export function CreateCommentForm({
   postId,
   onCommentAdded,
