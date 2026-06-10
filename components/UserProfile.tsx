@@ -17,7 +17,6 @@ import { Avatar } from "@/components/Avatar";
 import PostCard from "./PostCard";
 import { PostWithAuthor } from "./Feed";
 import { Prisma } from "@prisma/client";
-import { useAuth } from "@/context/AuthContext";
 import React, { useState } from "react";
 import { toggleFollow } from "@/lib/actions";
 import { useRouter } from "next/navigation";
@@ -44,7 +43,7 @@ interface UserProfileProps {
   user: UserWithRelations;
   userPosts: PostWithAuthor[];
   likedPosts: PostWithAuthor[];
-  currentUser: UserWithRelations;
+  currentUser: UserWithRelations | null;
 }
 
 export function UserProfile({
