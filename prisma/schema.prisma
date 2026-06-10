@@ -1,17 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") 
 }
 
 model User {
@@ -26,6 +22,15 @@ model User {
   displayUsername String?
   sessions        Session[]
   accounts        Account[]
+
+  bio String?
+  comments Comment[]
+  posts Post[]
+  likes Like[]
+  commentLikes CommentLike[]
+
+  followers User[] @relation("UserFollows")
+  following User[] @relation("UserFollows")
 
   @@unique([email])
   @@unique([username])
@@ -78,4 +83,60 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Post {
+  id String @id @default(uuid())
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId String
+  author User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes Like[]
+  comments Comment[]
+
+  @@map("post")
+}
+
+model Like {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("like")
+}
+
+model Comment {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content String
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  commentLikes CommentLike[]
+
+  @@map("comment")
+}
+
+model CommentLike {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId String
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@map("comment_like")
 }

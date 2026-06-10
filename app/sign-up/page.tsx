@@ -44,7 +44,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex flex-1 items-start justify-center p-4 min-h-screen">
+    <div className="flex flex-1 items-start justify-center p-4 pt-12 overflow-hidden min-h-screen max-h-screen">
       <Card className="w-full max-w-md bg-sidebar border border-solid shadow-sm">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight text-foreground">

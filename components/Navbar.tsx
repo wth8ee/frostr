@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { ModeToggle } from "./ModeToggle";
 import { SidebarTrigger } from "./ui/sidebar";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
 import { Avatar } from "@/components/Avatar";
 import {
   DropdownMenu,
@@ -14,11 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { LogOut, Settings, User } from "lucide-react";
-import { signOut } from "@/lib/auth-actions";
 import { useAuth } from "@/context/AuthContext";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
+  const Router = useRouter();
   const { session } = useAuth();
+  const user = session?.user;
 
   return (
     <nav className="w-full p-2 flex items-center justify-between bg-transparent">
@@ -53,7 +55,13 @@ function Navbar() {
               className="min-w-40"
             >
               <DropdownMenuLabel>{session.user.username}</DropdownMenuLabel>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (user) {
+                    Router.push(`/user/${user.username}`);
+                  }
+                }}
+              >
                 Profile
                 <DropdownMenuShortcut>
                   <User />
@@ -65,7 +73,10 @@ function Navbar() {
                   <Settings />
                 </DropdownMenuShortcut>
               </DropdownMenuItem>
-              <DropdownMenuItem variant="destructive" onClick={signOut}>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => authClient.signOut()}
+              >
                 Log Out
                 <DropdownMenuShortcut>
                   <LogOut className="text-destructive" />

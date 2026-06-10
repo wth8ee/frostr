@@ -8,7 +8,6 @@ import {
   Users,
   Bookmark,
   Settings,
-  LogOut,
   SnowflakeIcon,
 } from "lucide-react";
 import {
@@ -16,7 +15,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -24,18 +22,25 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-
-// Основные ссылки
-const mainNavItems = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Messages", url: "/messages", icon: Mail },
-  { title: "Notifications", url: "/notifications", icon: Bell },
-  { title: "Profile", url: "/profile", icon: User },
-  { title: "Friends", url: "/friends", icon: Users },
-  { title: "Saved", url: "/saved", icon: Bookmark },
-];
+import { authClient } from "@/lib/auth-client";
 
 export function AppSidebar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  const mainNavItems = [
+    { title: "Home", url: "/", icon: Home },
+    { title: "Messages", url: user ? "/" : "/sign-in", icon: Mail },
+    { title: "Notifications", url: user ? "/" : "/sign-in", icon: Bell },
+    {
+      title: "Profile",
+      url: user ? `/user/${user.username}` : "/sign-in",
+      icon: User,
+    },
+    { title: "Friends", url: user ? "/" : "/sign-in", icon: Users },
+    { title: "Saved", url: user ? "/" : "/sign-in", icon: Bookmark },
+  ];
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">

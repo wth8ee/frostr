@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -15,15 +15,67 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Google, Github } from "@thesvg/react";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignIn() {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [account, setAccount] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Логика вызова authClient.signIn.username пойдет сюда
+    try {
+      if (!account.includes("@")) {
+        await authClient.signIn.username(
+          {
+            username: account.trim(),
+            password: password,
+          },
+          {
+            onSuccess: () => {
+              window.location.href = "/";
+            },
+            onError: (ctx) => {
+              console.log(ctx.error.message);
+            },
+          },
+        );
+      } else {
+        await authClient.signIn.email(
+          {
+            email: account,
+            password: password,
+          },
+          {
+            onSuccess: () => {
+              window.location.href = "/";
+            },
+            onError: (ctx) => {
+              console.log(ctx.error.message);
+            },
+          },
+        );
+      }
+      await authClient.signIn.username(
+        {
+          username: account.trim(),
+          password: password,
+        },
+        {
+          onSuccess: () => {
+            window.location.href = "/";
+          },
+          onError: (ctx) => {
+            console.log(ctx.error.message);
+          },
+        },
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <div className="flex flex-1 items-start justify-center p-4 min-h-screen">
+    <div className="flex flex-1 items-start justify-center p-4 pt-12 min-h-screen">
       <Card className="w-full max-w-md bg-sidebar border border-solid shadow-sm">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight text-foreground">
@@ -71,6 +123,8 @@ export default function SignIn() {
                 Username or Email
               </Label>
               <Input
+                onChange={(e) => setAccount(e.target.value)}
+                value={account}
                 id="account"
                 type="text"
                 placeholder="frosty or name@example.com"
@@ -83,7 +137,6 @@ export default function SignIn() {
                 <Label htmlFor="password" className="text-sm font-medium">
                   Password
                 </Label>
-                {/* Ссылка на восстановление пароля — частый элемент для Sign In */}
                 <Link
                   href="/forgot-password"
                   className="text-xs text-muted-foreground hover:underline underline-offset-2"
@@ -92,6 +145,8 @@ export default function SignIn() {
                 </Link>
               </div>
               <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 type="password"
                 placeholder="••••••••"
