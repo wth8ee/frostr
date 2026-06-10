@@ -9,13 +9,14 @@ const prisma = new PrismaClient();
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   baseURL:
-    process.env.NODE_ENV === "production"
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000",
-  trustedOrigins:
-    process.env.NODE_ENV === "production"
-      ? [`https://${process.env.VERCEL_URL}`, "https://vercel.app"]
-      : [],
+    process.env.BETTER_AUTH_URL ||
+    `https://${process.env.VERCEL_URL}` ||
+    "http://localhost:3000",
+
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+  },
+  trustedOrigins: ["https://vercel.app", `https://${process.env.VERCEL_URL}`],
   emailAndPassword: {
     enabled: true,
   },
