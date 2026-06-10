@@ -8,6 +8,10 @@ const prisma = new PrismaClient();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.BETTER_AUTH_URL,
   emailAndPassword: {
     enabled: true,
   },
